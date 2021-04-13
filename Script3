@@ -1,0 +1,36 @@
+<#
+ Contenu de P5_Colman_script03.ps1
+
+                            
+                            
+                           Script de recherche de groupe par utilisateur V1.0
+
+#>
+
+
+
+#Demande du login de l'utilisateur
+$login = ""
+
+#Valeur du nombre d'essai
+$i = 0
+
+#Boucle saisi utilisateur
+While($login -eq ""){
+
+    #Demande du nom et prénom de l'utilisateur à créer
+    $login = Read-Host "Merci de Rentrer le Login de l’Utilisateur"
+    $i++
+    
+    #Si au bout de 5 essais aucune valeur n'est rentree fermeture
+    if($i -eq 5){
+        Write-Host "trop de saisi donc fermeture"
+         
+        exit
+    }
+
+}
+#Demande des groupes d'un utilisateur puis création d'une liste
+Get-ADPrincipalGroupMembership $login | Select-Object name | Export-Csv P5_Colman_AD03.csv -Encoding UTF8
+
+exit 1
