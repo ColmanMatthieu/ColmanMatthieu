@@ -1,0 +1,69 @@
+<#
+ Contenu de P5_Colman_script01.ps1
+
+                            
+                            
+                           Script de création d'utilisateur et de dossier partager V1.0
+
+#>
+
+#Fonction de boucle en cas de non saisie de demande de variable
+function SaisieUtilisateur ( $Demande ){
+ 
+        $string = ""
+        $i = 0
+
+    while( $string -eq ""){
+        $string = Read-Host $Demande
+        $i++
+    
+    if($i -eq 5){
+        Write-Host "trop de saisi donc fermeture"
+         
+        exit
+       
+        }
+
+    }
+
+    return $string
+
+}
+
+#Variable du chemin d'accés des dossiers partager
+$fichier = "C:\ACMEgroup\"
+
+
+#Demande du nom et prénom de l'utilisateur à créer
+$nom = SaisieUtilisateur ("Merci de Rentrer le Nom et le Prénom de l’Utilisateur à Créer")
+
+#Demande du login de l'utilisateur à créer
+$login = SaisieUtilisateur ("Merci de Rentrer le Login de l’Utilisateur à Créer")
+
+#Vérification de potentiel doublons dans l'Active Directory
+if (Get-ADuser -F {SamAccountName -eq $login}){
+
+    #Affichage de message en cas de doublons sous forme de warning
+    Write-Warning "Utilisateur deja present dans l'AD"
+
+    exit
+
+}
+
+#Demande de mot de passe pour l'utilisateur à créer
+$mdp = SaisieUtilisateur ("Merci de Rentrer le Mot de Passe de l’Utilisateur à Créer")
+
+#Création du nouvelle utilisateur
+New-ADUser -Name $nom -SamAccountName $login -UserPrincipalName $login@ACME.GROUP -AccountPassword (ConvertTo-SecureString -AsPlainText $mdp -Force) -PasswordNeverExpires $true -CannotChangePassword $true -Enabled $true
+
+#Vérification de potentiel doublons dans les dossiers partager
+If ((Test-Path -Path $fichier) -eq $True){
+
+    #Création du dossier partager
+    New-Item -path $fichier -name $login -itemType Directory
+
+    exit
+
+}
+
+exit 1
