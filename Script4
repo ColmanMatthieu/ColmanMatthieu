@@ -1,0 +1,12 @@
+<# 
+
+Contenu de Projet05_Colman_Script04.ps1
+
+
+
+                            Script de sauvegarde quotidienne de nuit V1.0
+
+#>
+
+#Copie de dossier de ACMEGROUP à SAV dans le lecteur C:\
+Copy-item -Path C:\ACMEGROUP -Destination C:\SAV -Recurse
